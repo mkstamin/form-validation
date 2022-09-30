@@ -1,31 +1,41 @@
-const form = document.getElementById('form');
-const username = document.getElementById('username');
-const email = document.getElementById('email');
-const password = document.getElementById('password');
-const password2 = document.getElementById('password2');
+const form = document.getElementById("form");
+const username = document.getElementById("username");
+const email = document.getElementById("email");
+const password = document.getElementById("password");
+const password2 = document.getElementById("password2");
+const error = document.getElementsByClassName("error");
 
 //Error Message
 function errorMessage(input, message) {
   const inputElement = input.parentElement;
-  inputElement.className = 'form-control error';
-  const small = inputElement.querySelector('small');
+  inputElement.className = "form-control error";
+  const small = inputElement.querySelector("small");
   small.innerText = message;
 }
 
 //Success message
 function successMessage(input) {
   const inputElement = input.parentElement;
-  inputElement.className = 'form-control success';
+  inputElement.className = "form-control success";
 }
 
 //Check Input Elements
 function checkInputElement(inputArr) {
   inputArr.forEach(function (input) {
-    if (input.value.trim() == '') {
+    if (input.value.trim() == "") {
       errorMessage(input, `${inputFieldName(input)} is requerd`);
     } else {
       successMessage(input);
     }
+  });
+}
+
+//Check Input Elements
+function inpVal(inputArr) {
+  inputArr.forEach(function (input) {
+    const inputElement = input.parentElement;
+    inputElement.classList.remove("success");
+    input.value = "";
   });
 }
 
@@ -48,18 +58,19 @@ function checkLength(input, min, max) {
 
 //Check email
 function checkEmail(email) {
-  const regx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const regx =
+    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   if (regx.test(email.value.trim())) {
     successMessage(email);
   } else {
-    errorMessage(email, 'Email is not valid');
+    errorMessage(email, "Email is not valid");
   }
 }
 
 //Match passwords
 function matchPassword(password, password2) {
   if (password.value !== password2.value) {
-    errorMessage(password2, 'Password does not match');
+    errorMessage(password2, "Password does not match");
   }
 }
 
@@ -69,7 +80,7 @@ function inputFieldName(input) {
 }
 
 //add event listener
-form.addEventListener('click', function (e) {
+form.addEventListener("submit", function (e) {
   e.preventDefault();
 
   checkInputElement([username, email, password, password2]);
@@ -77,4 +88,8 @@ form.addEventListener('click', function (e) {
   checkLength(password, 6, 35);
   checkEmail(email);
   matchPassword(password, password2);
+
+  if (error.length === 0) {
+    inpVal([username, email, password, password2]);
+  }
 });
